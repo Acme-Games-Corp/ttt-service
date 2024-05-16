@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { HelloWorld } from "./components/HelloWorld/HelloWorld";
 
 export default function Home() {
   return (
@@ -36,6 +37,13 @@ export default function Home() {
           width={180}
           height={37}
           priority
+        />
+      </div>
+      <div>
+        <HelloWorld
+          title="Default theme"
+          theme="primary"
+          testIdPrefix="hello world"
         />
       </div>
 
