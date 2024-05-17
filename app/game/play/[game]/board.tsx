@@ -1,13 +1,14 @@
 'use client';
 
-import React, { use } from "react";
-import Link from 'next/link'
-import { DebugForm } from "./debug_play";
+import React from "react";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
 
 import './board.css';
 
 export function Board ({ game }: { game: string }) {
+    const router = useRouter()
     // Todo: get rid of explicit any
     const defaultBoardState: any = {};
     const [boardState, setBoardState] = useState(defaultBoardState);
@@ -43,6 +44,7 @@ export function Board ({ game }: { game: string }) {
                                                     data.set('player', boardState.turn);
                                                     data.set('row', String(Math.floor(i/3)));
                                                     data.set('column', String(Math.floor(i%3)));
+                                                    // Todo: I could probably set board state sooner.
                                                     fetch(`/game/${game}`, {
                                                       method: 'PATCH',
                                                       body: data,
@@ -63,7 +65,9 @@ export function Board ({ game }: { game: string }) {
             { boardState && boardState.over && (
                 <>
                     <h1>Winner: {boardState.winner || 'tie!'}</h1>
-                    <p><Link href="/game/play">New Game</Link></p>
+                    <button type="button" onClick={() => router.push(`/game/play?t=${Date.now()}`)}>
+                        New Game
+                    </button>
                 </>
             ) }
             { boardState && boardState.over === null && (
