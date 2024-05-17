@@ -34,7 +34,8 @@ export async function gameData (game: string) {
         game,
         board: games[game].getBoard(),
         turn: games[game].lastPlayer() === 'x' ? 'o' : 'x',
-        winner: games[game].winner()
+        winner: games[game].winner(),
+        over: games[game].isOver()
     });
 }
 
@@ -48,7 +49,8 @@ export async function getGame (game: string) {
 }
 
 export async function initiateGame (user: string) {
-    if (currentGame === null) {
+    if (currentGame === null 
+        || (games[currentGame] !== undefined && games[currentGame].winner() !== null)) {
         currentGame = uuidv4();
         games[currentGame] = newGame();
     }

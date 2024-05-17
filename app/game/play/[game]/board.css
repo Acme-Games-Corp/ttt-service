@@ -1,0 +1,32 @@
+.board {
+display: flex;
+flex-flow: row wrap;
+}
+
+.board > span {
+width: 32%;
+text-align: center;
+font-size: 2.5rem
+}
+
+.board span:nth-child(3n+1), .board span:nth-child(3n+2) {
+    border-style: solid;
+    border-color: black;
+    border-width: 0px;
+    border-right-width: 1px;
+  }
+  
+  .board span:nth-child(-n + 3), .board span:nth-child(-n + 6) {
+    border-style: solid;
+    border-color: black;
+    border-bottom-width: 1px;
+  }
+
+  .board > span > button {
+    /* width: 100%; */
+    padding: 0 2.5rem;
+    font-size: 2.0rem;
+    margin: 0 0.25rem;
+    background-color: grey;
+  }
+

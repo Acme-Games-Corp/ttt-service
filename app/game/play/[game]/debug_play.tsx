@@ -5,18 +5,14 @@ export function DebugForm ({ game, setBoardState }: { game: string, setBoardStat
         <h1>Hello World</h1>
         <form onSubmit={(evt) => {
             evt.preventDefault();
-            console.log(evt);
-            const data = new FormData(evt.target as HTMLFormElement);
-
-            console.log(data.get('email')); // Reference by form input's `name` tag
-        
+            const data = new FormData(evt.target as HTMLFormElement);        
             fetch(`/game/${game}`, {
               method: 'PATCH',
               body: data,
             }).then((response) => {
                 response.json().then((data) => {
-                    console.log(data);
                     setBoardState(data);
+                    (evt.target as HTMLFormElement).reset();
                 });
             });
         }}>
