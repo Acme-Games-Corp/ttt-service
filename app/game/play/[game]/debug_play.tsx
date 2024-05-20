@@ -2,7 +2,6 @@
 import { Dispatch } from "react";
 export function DebugForm ({ game, setBoardState }: { game: string, setBoardState: Dispatch<any> }) {
     return (<>
-        <h1>Hello World</h1>
         <form onSubmit={(evt) => {
             evt.preventDefault();
             const data = new FormData(evt.target as HTMLFormElement);        

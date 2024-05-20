@@ -4,6 +4,7 @@ import React from "react";
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react";
+import { DebugForm } from "./debug_play";
 
 import './board.css';
 
@@ -24,7 +25,6 @@ export function Board ({ game }: { game: string }) {
     }, []);
     return (
         <main>
-            {/* <h1>Hello, Home page!</h1> */}
             <div>
                 <div className="board">
                     { boardState && boardState.board &&
@@ -40,6 +40,9 @@ export function Board ({ game }: { game: string }) {
                                             <span key={i}>
                                                 <button onClick={(evt) => {
                                                     evt.preventDefault();
+                                                    if (boardState.over) {
+                                                        return;
+                                                    }
                                                     const data = new FormData();
                                                     data.set('player', boardState.turn);
                                                     data.set('row', String(Math.floor(i/3)));
@@ -61,7 +64,7 @@ export function Board ({ game }: { game: string }) {
                     }
                 </div>
             </div>
-            <pre>{JSON.stringify(boardState)}</pre>
+            {/* <pre>{JSON.stringify(boardState)}</pre> */}
             { boardState && boardState.over && (
                 <>
                     <h1>Winner: {boardState.winner || 'tie!'}</h1>
@@ -73,15 +76,16 @@ export function Board ({ game }: { game: string }) {
             { boardState && boardState.over === null && (
                 <h1>It is now {boardState.turn} turn.</h1>
             ) }
-            <p>{boardState.winner}</p>
-            { boardState?.error && (
+            { boardState?.error && (<p>{boardState.error}</p>) }
+            { boardState?.error === 404 && (
                 <>
-                    <p>{boardState.error}</p>
-                    <p><Link href="/game/play">New Game</Link></p>
+                    <button type="button" onClick={() => router.push(`/game/play?t=${Date.now()}`)}>
+                        New Game
+                    </button>
                 </>
             ) }
             {/* Use debug inputs to write JSON for patches to the game. */}
-            {/* { !boardState?.error && 
+            {/* { boardState?.error !== 404 && 
                 <DebugForm game={game} setBoardState={setBoardState} />
             } */}
         </main>
