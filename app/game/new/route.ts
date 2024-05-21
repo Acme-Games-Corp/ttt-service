@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 // Todo: gotta fix how this is imported
-import { newGame } from 'tictactoe';
+import { CoordValue, newGame } from 'tictactoe';
+import { TTTObject, PlayerValue } from 'tictactoe'; 
 
 let currentGame: string | null = null;
-// Todo: get away from the any type, here.
-const games: { [key: string]: any } = {};
+const games: { [key: string]: TTTObject } = {};
 
 export function clearGame () {
     currentGame = null;
@@ -13,7 +13,7 @@ export function clearGame () {
 // Todo: improve types
 export async function nextMove (game: string, player: FormDataEntryValue  | null, position: (FormDataEntryValue | null)[]) {
     if (currentGame === game) {
-        games[currentGame].nextMove(player, [parseInt(position[0] as string), parseInt(position[1] as string)]);
+        games[currentGame].nextMove(player as PlayerValue, [parseInt(position[0] as string) as CoordValue, parseInt(position[1] as string) as CoordValue]);
         return (gameData(currentGame));
     }
     return ({
@@ -44,7 +44,7 @@ export async function getGame (game: string) {
         return (gameData(currentGame));
     }
     return ({
-        error: 404
+        error: '404'
     });
 }
 

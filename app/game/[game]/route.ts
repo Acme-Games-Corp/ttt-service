@@ -12,18 +12,18 @@ export async function PATCH(
     request: Request,
     { params }: { params: { game: string } }
 ) {
-    // Todo: error handling - try/catch required here.
     const formData = await request.formData();
-    let error = null;
+    let error: string | null = null;
     try {
         await nextMove(params.game, formData.get('player'), [formData.get('row'), formData.get('column')]);
-    // Todo: remove explicit any
-    } catch (e: any) {
-        error = e.message;
+    } catch (e: unknown) {
+        if (typeof e === 'object' && e !== null && 'message' in e) {
+            error = e.message as string;
+        }
     }
     let gameData = await getGame(params.game);
     if (error !== null) {
-        gameData = { ...gameData, error  };
+        gameData = { ...gameData, error };
     }
     return Response.json(gameData);
 }
