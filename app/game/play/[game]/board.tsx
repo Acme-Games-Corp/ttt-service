@@ -29,6 +29,7 @@ export function Board ({ game }: { game: string }) {
         error: null,
     };
     const [boardState, setBoardState] = useState(defaultBoardState);
+    const [play, setPlay] = useState(true);
     useEffect(() => {
         fetch(`/game/${game}`, {
             method: 'GET',
@@ -56,14 +57,24 @@ export function Board ({ game }: { game: string }) {
                                             <span key={i}>
                                                 <button onClick={(evt) => {
                                                     evt.preventDefault();
-                                                    if (boardState.over) {
+                                                    if (boardState.over || !play) {
                                                         return;
                                                     }
                                                     const data = new FormData();
-                                                    data.set('player', boardState.turn === null ? '' : boardState.turn);
+                                                    data.set('player', boardState.turn === null ? 'x' : boardState.turn);
                                                     data.set('row', String(Math.floor(i/3)));
                                                     data.set('column', String(Math.floor(i%3)));
-                                                    // Todo: I could probably set board state sooner.
+                                                    // Todo: There is probably a cleaner way to deal with this.
+                                                    // Using the custom grid class will be useful.
+                                                    let newBoard = boardState.board === null 
+                                                        ? [[null, null, null], [null, null, null], [null, null, null]]
+                                                        : [[...boardState.board[0]], [...boardState.board[1]], [...boardState.board[2]]];
+                                                    newBoard[Math.floor(i/3)][Math.floor(i%3)] = boardState.turn === null ? 'x' : boardState.turn;
+                                                    setBoardState({
+                                                        ...boardState,
+                                                        board: newBoard
+                                                    });
+                                                    setPlay(false);
                                                     fetch(`/game/${game}`, {
                                                       method: 'PATCH',
                                                       body: data,
@@ -71,6 +82,8 @@ export function Board ({ game }: { game: string }) {
                                                         response.json().then((data) => {
                                                             setBoardState(data);
                                                         });
+                                                    }).finally(() => {
+                                                        setPlay(true);
                                                     });
                                                 }}>&nbsp;</button>
                                             </span>
@@ -80,7 +93,7 @@ export function Board ({ game }: { game: string }) {
                     }
                 </div>
             </div>
-            <pre>{JSON.stringify(boardState)}</pre>
+            {/* <pre>{JSON.stringify(boardState)}</pre> */}
             { boardState && boardState.over && (
                 <>
                     <h1>Winner: {boardState.winner || 'tie!'}</h1>
